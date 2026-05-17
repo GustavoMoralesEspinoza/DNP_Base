@@ -72,8 +72,11 @@ class PyEvaluationResult:
         
         if self.topology_result is not None:
             print("\n[TOPOLOGÍA]")
-            for key, value in self.topology_result.items():
-                print(f"  {key}:                    {value}")
+            print(f"  Topología válida:         {self.topology_result.get('is_valid')}")
+            print(
+                "  Penalidad topológica:     "
+                f"{self.topology_result.get('total_penalty', 0.0):.6f}"
+            )
         
         if self.dss_results is not None:
             print("\n[FLUJO DE POTENCIA]")

@@ -1,5 +1,5 @@
 """
-main.py: demostracion de FASE 6 - AG simple sin OpenDSS.
+main.py: demostracion de FASE 7 - AG simple con validacion topologica.
 """
 
 import os
@@ -15,11 +15,13 @@ from economics.py_investment_cost import PyInvestmentCost
 from economics.py_present_value import PyPresentValue
 from economics.py_objective_function import PyObjectiveFunction
 from genetic_algorithm.py_simple_ga import PySimpleGA
+from topology.py_topology_validator import PyTopologyValidator
+from reports.py_topology_debug_plot import PyTopologyDebugPlot
 
 
 def main():
     print("\n" + "=" * 70)
-    print("DEP_AG_SIMPLE - FASE 6: Algoritmo Genetico simple sin OpenDSS")
+    print("DEP_AG_SIMPLE - FASE 7: AG simple con validacion topologica")
     print("=" * 70)
 
     config = PyConfigBase()
@@ -40,16 +42,19 @@ def main():
     print(f"Crossover rate: {config.crossover_rate}")
     print(f"Mutation rate: {config.mutation_rate}")
     print(f"Elitism rate: {config.elitism_rate}")
+    print(f"Validacion topologica: {config.use_topology_validation}")
 
     present_value = PyPresentValue(config)
     objective_function = PyObjectiveFunction(config)
+    topology_validator = PyTopologyValidator(config, data)
 
     problem = PyPlanningProblem(
         config=config,
         data=data,
         investment_cost=investment_cost,
         present_value=present_value,
-        objective_function=objective_function
+        objective_function=objective_function,
+        topology_validator=topology_validator
     )
 
     ga = PySimpleGA(config, problem, data)
@@ -64,6 +69,20 @@ def main():
     objective_result = getattr(best_result, "objective_result", None)
     if objective_result is not None:
         objective_function.print_objective_summary(objective_result)
+
+    if best_result.topology_result is not None:
+        topology_validator.print_topology_summary(best_result.topology_result)
+
+    if config.use_topology_debug_plots:
+        topology_debug = PyTopologyDebugPlot(config, data)
+        topology_debug.plot_chromosome(
+            best_result.chromosome,
+            prefix="best_solution"
+        )
+        print(
+            "Graficos de debug topologico guardados en:",
+            config.topology_debug_output_folder
+        )
 
 
 if __name__ == "__main__":

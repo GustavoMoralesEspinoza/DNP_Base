@@ -35,6 +35,9 @@ class PyMutation:
     def get_valid_options_for_line(self, line_id):
         valid_options = list(self.data["valid_options_by_line"].get(line_id, []))
 
+        if -1 not in valid_options:
+            valid_options.append(-1)
+
         if not valid_options:
             valid_options = [-1]
 

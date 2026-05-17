@@ -27,7 +27,10 @@ class PySimpleGA:
         self.history_feasible = []
 
     def run(self):
-        print("\nIniciando AG simple sin OpenDSS...")
+        if getattr(self.config, "use_topology_validation", False):
+            print("\nIniciando AG simple con validacion topologica...")
+        else:
+            print("\nIniciando AG simple sin OpenDSS...")
 
         population = self.population_creator.create_initial_population()
 

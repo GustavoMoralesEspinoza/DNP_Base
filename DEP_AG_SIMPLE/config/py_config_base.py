@@ -58,20 +58,25 @@ class PyConfigBase:
         
         # Parámetros del AG
         self.n_individuals = 20
-        self.n_iterations = 30
+        self.n_iterations = 100
         self.crossover_rate = 0.8
         self.mutation_rate = 0.05
         self.elitism_rate = 0.2
-        self.random_seed = 42
+        self.random_seed = 60
         
         # Parámetros del problema
         self.n_stages = 3
         self.stage_years = [1, 1, 2]
         
         # Parámetros de topología
+        self.use_topology_validation = True
         self.use_topology_repair = True
         self.use_reconnection = True
         self.use_radiality_repair = True
+        self.use_topology_debug_plots = True
+        self.topology_debug_output_folder = "outputs/topology_debug"
+        self.topology_debug_with_labels = True
+        self.topology_debug_layout_seed = 42
         
         # Parámetros de módulos
         self.use_open_dss = False
@@ -97,6 +102,11 @@ class PyConfigBase:
         # Parámetros de penalidades y normalización
         self.penalty_invalid_option = 1e6       # Penalidad por opción inválida
         self.penalty_warning = 1e4              # Penalidad por advertencia general
+        self.penalty_cycle = 1e5
+        self.penalty_isolated_bus = 1e5
+        self.penalty_component_without_source = 1e4
+        self.penalty_multiple_sources = 1e4
+        self.penalty_disconnected_load = 1e4
         self.minimum_normalization_value = 1e-9 # Mínimo para evitar división por cero
 
     def show(self):
@@ -122,9 +132,12 @@ class PyConfigBase:
         print(f"  Años por etapa:          {self.stage_years}")
         
         print("\n[TOPOLOGÍA]")
+        print(f"  Validación de topología: {self.use_topology_validation}")
         print(f"  Reparación de topología: {self.use_topology_repair}")
         print(f"  Reconexión permitida:    {self.use_reconnection}")
         print(f"  Reparación de radialidad:{self.use_radiality_repair}")
+        print(f"  Debug plots topología:   {self.use_topology_debug_plots}")
+        print(f"  Carpeta debug topología: {self.topology_debug_output_folder}")
         
         print("\n[MÓDULOS ACTIVOS]")
         print(f"  OpenDSS:                 {self.use_open_dss}")
@@ -150,6 +163,11 @@ class PyConfigBase:
         print("\n[PENALIDADES Y NORMALIZACIÓN]")
         print(f"  Penalidad opción inválida: {self.penalty_invalid_option:.0e}")
         print(f"  Penalidad por advertencia: {self.penalty_warning:.0e}")
+        print(f"  Penalidad por ciclo:     {self.penalty_cycle:.0e}")
+        print(f"  Penalidad bus aislado:   {self.penalty_isolated_bus:.0e}")
+        print(f"  Penalidad comp. sin fuente: {self.penalty_component_without_source:.0e}")
+        print(f"  Penalidad múltiples fuentes: {self.penalty_multiple_sources:.0e}")
+        print(f"  Penalidad carga desconectada: {self.penalty_disconnected_load:.0e}")
         print(f"  Mínimo normalización:    {self.minimum_normalization_value:.0e}")
         
         print("\n" + "="*60 + "\n")
