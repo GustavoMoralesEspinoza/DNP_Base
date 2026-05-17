@@ -43,6 +43,12 @@ def main():
     print(f"Mutation rate: {config.mutation_rate}")
     print(f"Elitism rate: {config.elitism_rate}")
     print(f"Validacion topologica: {config.use_topology_validation}")
+    print(f"Collapse sources: {config.collapse_sources}")
+    print(f"Equivalent source: {config.equivalent_source_name}")
+    print(
+        "Allow multiple sources/component:",
+        config.allow_multiple_sources_per_component
+    )
 
     present_value = PyPresentValue(config)
     objective_function = PyObjectiveFunction(config)

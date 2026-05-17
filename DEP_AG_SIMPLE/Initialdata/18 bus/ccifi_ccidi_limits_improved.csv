@@ -1,5 +1,1 @@
-original_id,bus,consumer_class,matched_load_id,matched_in_network,CCIFI_stage_1,CCIDI_stage_1,CCIFI_stage_2,CCIDI_stage_2,CCIFI_stage_3,CCIDI_stage_3
-B17_I4,B17,I4,B17,0,4,10,4,10,4,10
-B43_I4,B43,I4,B43,0,-1,-1,-1,-1,4,10
-B44_I4,B44,I4,B44,0,-1,-1,4,10,4,10
-B32_I4,B32,I4,B32,0,-1,-1,-1,-1,4,10
+limit_id,bus,consumer_class,matched_load_id,CCIFI_stage_1,CCIDI_stage_1,CCIFI_stage_2,CCIDI_stage_2,CCIFI_stage_3,CCIDI_stage_3

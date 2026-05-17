@@ -54,12 +54,12 @@ class PyTopologyDebugPlot:
 
         buses = self._get_all_buses()
         if buses:
-            graph.add_nodes_from(buses)
+            graph.add_nodes_from(self.normalize_bus_name(bus) for bus in buses)
         else:
             for line_id in self.line_ids:
                 bar_1, bar_2 = self.get_line_buses(line_id)
-                graph.add_node(bar_1)
-                graph.add_node(bar_2)
+                graph.add_node(self.normalize_bus_name(bar_1))
+                graph.add_node(self.normalize_bus_name(bar_2))
 
         for line_idx, option_id in enumerate(stage_vector):
             if option_id == -1 or line_idx >= len(self.line_ids):
@@ -67,6 +67,8 @@ class PyTopologyDebugPlot:
 
             line_id = self.line_ids[line_idx]
             bar_1, bar_2 = self.get_line_buses(line_id)
+            bar_1 = self.normalize_bus_name(bar_1)
+            bar_2 = self.normalize_bus_name(bar_2)
             graph.add_edge(
                 bar_1,
                 bar_2,
@@ -114,6 +116,9 @@ class PyTopologyDebugPlot:
         raise KeyError(f"No se encontraron barras para line_id={line_id}")
 
     def get_sources(self):
+        if self.config.collapse_sources:
+            return [self.config.equivalent_source_name]
+
         source_buses = self.data.get("source_buses")
         if source_buses:
             return list(source_buses)
@@ -128,12 +133,16 @@ class PyTopologyDebugPlot:
     def get_load_buses(self):
         load_buses = self.data.get("load_buses")
         if load_buses:
-            return list(load_buses)
+            return [
+                self.normalize_bus_name(bus)
+                for bus in load_buses
+            ]
 
         sources = set(self.get_sources())
         return [
-            bus for bus in self._get_all_buses()
-            if bus not in sources
+            self.normalize_bus_name(bus)
+            for bus in self._get_all_buses()
+            if self.normalize_bus_name(bus) not in sources
         ]
 
     def analyze_components(self, graph, stage_index):
@@ -183,6 +192,8 @@ class PyTopologyDebugPlot:
         print("\n" + "=" * 60)
         print(f"TOPOLOGY DEBUG - ESTAGIO {stage_index + 1}")
         print("=" * 60)
+        print(f"collapse_sources: {self.config.collapse_sources}")
+        print(f"equivalent_source_name: {self.config.equivalent_source_name}")
         print(f"Numero de componentes: {len(component_summary)}")
 
         for component_info in component_summary:
@@ -314,11 +325,24 @@ class PyTopologyDebugPlot:
         if with_labels:
             nx.draw_networkx_labels(graph, pos, font_size=7)
 
-        plt.title(f"Topology Debug - Stage {stage_index + 1}")
+        mode = "collapsed sources" if self.config.collapse_sources else "real sources"
+        plt.title(f"Topology Debug - Stage {stage_index + 1} ({mode})")
         plt.axis("off")
         plt.tight_layout()
         plt.savefig(output_path, dpi=300, bbox_inches="tight")
         plt.close()
+
+    def normalize_bus_name(self, bus_name):
+        if self.config.collapse_sources and self.is_source_bus(bus_name):
+            return self.config.equivalent_source_name
+        return bus_name
+
+    def is_source_bus(self, bus_name):
+        if bus_name in self.data.get("source_buses", []):
+            return True
+
+        bus_name_lower = str(bus_name).lower()
+        return "se" in bus_name_lower or "source" in bus_name_lower
 
     def _get_line_ids(self):
         line_catalog = self.data.get("line_catalog", {})

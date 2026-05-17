@@ -62,7 +62,7 @@ class PyConfigBase:
         self.crossover_rate = 0.8
         self.mutation_rate = 0.05
         self.elitism_rate = 0.2
-        self.random_seed = 60
+        self.random_seed = 50
         
         # Parámetros del problema
         self.n_stages = 3
@@ -77,6 +77,9 @@ class PyConfigBase:
         self.topology_debug_output_folder = "outputs/topology_debug"
         self.topology_debug_with_labels = True
         self.topology_debug_layout_seed = 42
+        self.collapse_sources = True
+        self.equivalent_source_name = "SE_1"
+        self.allow_multiple_sources_per_component = False
         
         # Parámetros de módulos
         self.use_open_dss = False
@@ -104,8 +107,8 @@ class PyConfigBase:
         self.penalty_warning = 1e4              # Penalidad por advertencia general
         self.penalty_cycle = 1e5
         self.penalty_isolated_bus = 1e5
-        self.penalty_component_without_source = 1e4
-        self.penalty_multiple_sources = 1e4
+        self.penalty_component_without_source = 1e6
+        self.penalty_multiple_sources = 1e6
         self.penalty_disconnected_load = 1e4
         self.minimum_normalization_value = 1e-9 # Mínimo para evitar división por cero
 
@@ -138,6 +141,9 @@ class PyConfigBase:
         print(f"  Reparación de radialidad:{self.use_radiality_repair}")
         print(f"  Debug plots topología:   {self.use_topology_debug_plots}")
         print(f"  Carpeta debug topología: {self.topology_debug_output_folder}")
+        print(f"  Colapsar fuentes:        {self.collapse_sources}")
+        print(f"  Fuente equivalente:      {self.equivalent_source_name}")
+        print(f"  Permitir múltiples fuentes/componente: {self.allow_multiple_sources_per_component}")
         
         print("\n[MÓDULOS ACTIVOS]")
         print(f"  OpenDSS:                 {self.use_open_dss}")

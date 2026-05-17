@@ -38,7 +38,7 @@ class PyTopologyValidator:
         graph = self.build_graph(stage_vector)
         cycles = nx.cycle_basis(graph)
         nodes_in_cycles = sorted({node for cycle in cycles for node in cycle})
-        sources = set(self._get_source_buses())
+        sources = set(self.get_sources())
         load_buses = self._get_load_buses(sources)
 
         isolated_loads = []
@@ -75,7 +75,10 @@ class PyTopologyValidator:
             warnings.append(
                 f"Etapa {stage_index}: {len(components_without_source)} componente(s) sin fuente"
             )
-        if components_with_multiple_sources:
+        if (
+            components_with_multiple_sources
+            and not self.config.allow_multiple_sources_per_component
+        ):
             warnings.append(
                 f"Etapa {stage_index}: {len(components_with_multiple_sources)} componente(s) con multiples fuentes"
             )
@@ -104,7 +107,7 @@ class PyTopologyValidator:
         graph = nx.Graph()
 
         for bus in self._get_all_buses():
-            graph.add_node(bus)
+            graph.add_node(self.normalize_bus_name(bus))
 
         for line_idx, option_id in enumerate(stage_vector):
             if option_id == -1 or line_idx >= len(self.line_ids):
@@ -113,6 +116,8 @@ class PyTopologyValidator:
             line_id = self.line_ids[line_idx]
             bus_1, bus_2 = self.get_line_buses(line_id)
             if bus_1 is not None and bus_2 is not None:
+                bus_1 = self.normalize_bus_name(bus_1)
+                bus_2 = self.normalize_bus_name(bus_2)
                 graph.add_edge(bus_1, bus_2, line_id=line_id, option_id=option_id)
 
         return graph
@@ -152,11 +157,39 @@ class PyTopologyValidator:
             self.config.penalty_component_without_source
             * len(stage_result["components_without_source"])
         )
-        penalty += (
-            self.config.penalty_multiple_sources
-            * len(stage_result["components_with_multiple_sources"])
-        )
+
+        if not self.config.allow_multiple_sources_per_component:
+            penalty += (
+                self.config.penalty_multiple_sources
+                * len(stage_result["components_with_multiple_sources"])
+            )
         return penalty
+
+    def normalize_bus_name(self, bus_name):
+        if self.config.collapse_sources and self.is_source_bus(bus_name):
+            return self.config.equivalent_source_name
+        return bus_name
+
+    def is_source_bus(self, bus_name):
+        if bus_name in self.data.get("source_buses", []):
+            return True
+
+        bus_name_lower = str(bus_name).lower()
+        return "se" in bus_name_lower or "source" in bus_name_lower
+
+    def get_sources(self):
+        if self.config.collapse_sources:
+            return [self.config.equivalent_source_name]
+
+        source_buses = self.data.get("source_buses")
+        if source_buses:
+            return list(source_buses)
+
+        detected_sources = []
+        for bus in self._get_all_buses():
+            if self.is_source_bus(bus):
+                detected_sources.append(bus)
+        return detected_sources
 
     def print_topology_summary(self, topology_result):
         print("\n" + "=" * 70)
@@ -199,24 +232,16 @@ class PyTopologyValidator:
             return buses
         return []
 
-    def _get_source_buses(self):
-        source_buses = self.data.get("source_buses")
-        if source_buses:
-            return list(source_buses)
-
-        detected_sources = []
-        for bus in self._get_all_buses():
-            bus_lower = str(bus).lower()
-            if "se" in bus_lower or "source" in bus_lower:
-                detected_sources.append(bus)
-        return detected_sources
-
     def _get_load_buses(self, sources):
         load_buses = self.data.get("load_buses")
         if load_buses:
-            return list(load_buses)
+            return [
+                self.normalize_bus_name(bus)
+                for bus in load_buses
+            ]
 
         return [
-            bus for bus in self._get_all_buses()
-            if bus not in sources
+            self.normalize_bus_name(bus)
+            for bus in self._get_all_buses()
+            if self.normalize_bus_name(bus) not in sources
         ]
