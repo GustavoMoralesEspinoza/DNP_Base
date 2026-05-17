@@ -1,0 +1,5 @@
+limit_id,bus,consumer_class,matched_load_id,CCIFI_stage_1,CCIDI_stage_1,CCIFI_stage_2,CCIDI_stage_2,CCIFI_stage_3,CCIDI_stage_3
+LIM001,B17,I4,LD018,4,10,4,10,4,10
+LIM002,B43,I4,LD046,-1,-1,-1,-1,4,10
+LIM003,B44,I4,LD048,-1,-1,4,10,4,10
+LIM004,B32,I4,LD034,-1,-1,-1,-1,4,10
