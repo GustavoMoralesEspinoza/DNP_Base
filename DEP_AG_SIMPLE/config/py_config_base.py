@@ -57,16 +57,16 @@ class PyConfigBase:
         """
         
         # Parámetros del AG
-        self.n_individuals = 10
-        self.n_iterations = 20
+        self.n_individuals = 20
+        self.n_iterations = 100
         self.crossover_rate = 0.8
         self.mutation_rate = 0.05
         self.elitism_rate = 0.2
-        self.random_seed = 20
+        self.random_seed = 10
         
         # Parámetros del problema
         self.n_stages = 3
-        self.stage_years = [1, 1, 2]
+        self.stage_years = [5, 5, 2]
         
         # Parámetros de topología
         self.use_topology_validation = True
