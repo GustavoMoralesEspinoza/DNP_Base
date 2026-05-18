@@ -49,7 +49,10 @@ class PySimpleGA:
         evaluated_population = []
 
         for chromosome in population:
-            evaluated_population.append(self.problem.evaluate(chromosome))
+            # PyPlanningProblem.evaluate() may repair the chromosome. From this
+            # point on, the AG must use result.chromosome as the individual.
+            evaluated_result = self.problem.evaluate(chromosome)
+            evaluated_population.append(evaluated_result)
 
         return evaluated_population
 

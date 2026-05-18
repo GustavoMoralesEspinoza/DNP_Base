@@ -58,11 +58,11 @@ class PyConfigBase:
         
         # Parámetros del AG
         self.n_individuals = 20
-        self.n_iterations = 100
+        self.n_iterations = 30
         self.crossover_rate = 0.8
         self.mutation_rate = 0.05
         self.elitism_rate = 0.2
-        self.random_seed = 50
+        self.random_seed = 10
         
         # Parámetros del problema
         self.n_stages = 3
@@ -70,15 +70,62 @@ class PyConfigBase:
         
         # Parámetros de topología
         self.use_topology_validation = True
+
+        # -1 significa línea apagada, no instalada o removida.
+        # Pero una línea solo puede tomar -1 si -1 aparece dentro de sus opciones válidas.
+        # Si valid_options_by_line[line_id] = [0, 1, 2, 3], la línea es obligatoria:
+        # puede cambiar de opción, pero no puede desaparecer.
+        # Si valid_options_by_line[line_id] = [-1, 0, 1, 2, 3], la línea es removible/candidata:
+        # puede apagarse, mantenerse o reforzarse.
+        # Si valid_options_by_line[line_id] = [-1, 1, 2, 3], la línea es candidata nueva:
+        # puede no instalarse o instalarse con alguna opción válida.
+
+        # Activa la reparación topológica previa a evaluar fitness.
+        # Conviene apagarlo para depurar el AG "crudo" y prenderlo para buscar soluciones factibles.
         self.use_topology_repair = True
         self.use_reconnection = True
         self.use_radiality_repair = True
+
+        # Intenta conectar componentes sin fuente o cargas aisladas activando líneas disponibles.
+        self.use_reconnection_repair = True
+
+        # Intenta romper ciclos apagando líneas removibles.
+        self.use_cycle_repair = True
+
+        # Si las fuentes no están colapsadas, intenta separar componentes con múltiples fuentes.
+        self.use_multiple_sources_repair = True
+
+        # Límite de iteraciones por estágio para evitar bucles infinitos de reparación.
+        self.repair_max_iterations = 20
+
+        # Estrategia de reparación: "random" explora más alternativas; "cheapest" es determinística por costo.
+        self.repair_strategy = "random"
+
+        # Semilla usada solo por la reparación cuando repair_strategy == "random".
+        self.repair_random_seed = 42
+
+        # Imprime/guarda más detalle de reparación cuando se use en reportes.
+        self.repair_verbose = True
+
+        # Si True, solo apaga líneas cuyo catálogo permita -1 explícitamente.
+        self.repair_only_removable_lines = True
+
+        # Si True, permite apagar líneas aunque -1 no sea opción válida. Útil solo para debug agresivo.
+        self.repair_allow_remove_non_candidate = True
         self.use_topology_debug_plots = True
         self.topology_debug_output_folder = "outputs/topology_debug"
         self.topology_debug_with_labels = True
         self.topology_debug_layout_seed = 42
+
+        # Si True, todas las subestaciones SE_* se interpretan como una fuente equivalente.
+        # Conviene prenderlo cuando el modelo eléctrico representa una misma fuente agregada.
         self.collapse_sources = True
+
+        # Nombre del nodo equivalente usado al colapsar fuentes.
         self.equivalent_source_name = "SE_1"
+
+        # Si True, no penaliza una componente con varias fuentes reales.
+        # Normalmente se deja False salvo estudios donde las fuentes paralelas son aceptables.
         self.allow_multiple_sources_per_component = False
         
         # Parámetros de módulos
@@ -86,6 +133,19 @@ class PyConfigBase:
         self.use_investment_cost = True
         self.use_electrical_loss_cost = False
         self.use_present_value = True
+
+        # Generación de archivos DSS. Solo escribe archivos; no ejecuta OpenDSS.
+        self.use_dss_writer = True
+        self.dss_output_folder = "outputs/dss_files"
+        self.dss_base_filename = "network_stage"
+        self.dss_base_kv = 13.8
+        self.dss_pu_source = 1.0
+        self.dss_angle = 0.0
+        self.dss_load_connection = "Wye"
+        self.dss_load_model = 1
+        self.dss_collapse_sources = True
+        self.dss_equivalent_source_name = "sourcebus"
+        self.dss_write_comments = True
         
         # Parámetros de objetivos
         self.w_inv = 0.7
@@ -103,13 +163,23 @@ class PyConfigBase:
         self.c_ele_max = 1.0
         
         # Parámetros de penalidades y normalización
-        self.penalty_invalid_option = 1e6       # Penalidad por opción inválida
-        self.penalty_warning = 1e4              # Penalidad por advertencia general
-        self.penalty_cycle = 1e5
-        self.penalty_isolated_bus = 1e5
-        self.penalty_component_without_source = 1e6
-        self.penalty_multiple_sources = 1e6
-        self.penalty_disconnected_load = 1e4
+        # Penalidades por errores graves de codificación/opciones.
+        self.penalty_invalid_option = 1e8
+
+        # Penalidades topológicas críticas.
+        self.penalty_component_without_source = 1e8
+        self.penalty_disconnected_load = 8e7
+        self.penalty_isolated_bus = 7e7
+
+        # Penalidades de radialidad/ciclos.
+        self.penalty_cycle = 5e7
+        self.penalty_nodes_in_cycles = 1e7
+
+        # Penalidades por múltiples fuentes.
+        self.penalty_multiple_sources = 3e7
+
+        # Penalidades por warnings generales.
+        self.penalty_warning = 0
         self.minimum_normalization_value = 1e-9 # Mínimo para evitar división por cero
 
     def show(self):
@@ -139,6 +209,12 @@ class PyConfigBase:
         print(f"  Reparación de topología: {self.use_topology_repair}")
         print(f"  Reconexión permitida:    {self.use_reconnection}")
         print(f"  Reparación de radialidad:{self.use_radiality_repair}")
+        print(f"  Reparación reconexión:   {self.use_reconnection_repair}")
+        print(f"  Reparación ciclos:       {self.use_cycle_repair}")
+        print(f"  Reparación múltiples fuentes: {self.use_multiple_sources_repair}")
+        print(f"  Máx. iteraciones reparación: {self.repair_max_iterations}")
+        print(f"  Estrategia reparación:   {self.repair_strategy}")
+        print(f"  Remover solo líneas removibles: {self.repair_only_removable_lines}")
         print(f"  Debug plots topología:   {self.use_topology_debug_plots}")
         print(f"  Carpeta debug topología: {self.topology_debug_output_folder}")
         print(f"  Colapsar fuentes:        {self.collapse_sources}")
@@ -150,6 +226,10 @@ class PyConfigBase:
         print(f"  Costo de inversión:      {self.use_investment_cost}")
         print(f"  Costo de pérdidas:       {self.use_electrical_loss_cost}")
         print(f"  Valor presente:          {self.use_present_value}")
+        print(f"  DSS writer:              {self.use_dss_writer}")
+        print(f"  Carpeta DSS:             {self.dss_output_folder}")
+        print(f"  Base kV DSS:             {self.dss_base_kv}")
+        print(f"  Colapsar fuentes DSS:    {self.dss_collapse_sources}")
         
         print("\n[OBJETIVOS]")
         print(f"  Peso inversión (w_inv):  {self.w_inv}")
@@ -170,6 +250,7 @@ class PyConfigBase:
         print(f"  Penalidad opción inválida: {self.penalty_invalid_option:.0e}")
         print(f"  Penalidad por advertencia: {self.penalty_warning:.0e}")
         print(f"  Penalidad por ciclo:     {self.penalty_cycle:.0e}")
+        print(f"  Penalidad nodos en ciclo:{self.penalty_nodes_in_cycles:.0e}")
         print(f"  Penalidad bus aislado:   {self.penalty_isolated_bus:.0e}")
         print(f"  Penalidad comp. sin fuente: {self.penalty_component_without_source:.0e}")
         print(f"  Penalidad múltiples fuentes: {self.penalty_multiple_sources:.0e}")

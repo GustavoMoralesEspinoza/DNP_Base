@@ -16,7 +16,9 @@ from economics.py_present_value import PyPresentValue
 from economics.py_objective_function import PyObjectiveFunction
 from genetic_algorithm.py_simple_ga import PySimpleGA
 from topology.py_topology_validator import PyTopologyValidator
+from topology.py_topology_repair import PyTopologyRepair
 from reports.py_topology_debug_plot import PyTopologyDebugPlot
+from dss.py_dss_writer import PyDSSWriter
 
 
 def main():
@@ -43,7 +45,9 @@ def main():
     print(f"Mutation rate: {config.mutation_rate}")
     print(f"Elitism rate: {config.elitism_rate}")
     print(f"Validacion topologica: {config.use_topology_validation}")
-    print(f"Collapse sources: {config.collapse_sources}")
+    print(f"use_topology_repair: {config.use_topology_repair}")
+    print(f"repair_strategy: {config.repair_strategy}")
+    print(f"collapse_sources: {config.collapse_sources}")
     print(f"Equivalent source: {config.equivalent_source_name}")
     print(
         "Allow multiple sources/component:",
@@ -53,6 +57,11 @@ def main():
     present_value = PyPresentValue(config)
     objective_function = PyObjectiveFunction(config)
     topology_validator = PyTopologyValidator(config, data)
+    topology_repair = PyTopologyRepair(
+        config=config,
+        data=data,
+        topology_validator=topology_validator
+    )
 
     problem = PyPlanningProblem(
         config=config,
@@ -60,7 +69,8 @@ def main():
         investment_cost=investment_cost,
         present_value=present_value,
         objective_function=objective_function,
-        topology_validator=topology_validator
+        topology_validator=topology_validator,
+        topology_repair=topology_repair
     )
 
     ga = PySimpleGA(config, problem, data)
@@ -79,6 +89,9 @@ def main():
     if best_result.topology_result is not None:
         topology_validator.print_topology_summary(best_result.topology_result)
 
+    if best_result.repair_result is not None:
+        topology_repair.print_repair_summary(best_result.repair_result)
+
     if config.use_topology_debug_plots:
         topology_debug = PyTopologyDebugPlot(config, data)
         topology_debug.plot_chromosome(
@@ -89,6 +102,17 @@ def main():
             "Graficos de debug topologico guardados en:",
             config.topology_debug_output_folder
         )
+
+    if config.use_dss_writer:
+        dss_writer = PyDSSWriter(config, data)
+        dss_files = dss_writer.write_chromosome(
+            best_result.chromosome,
+            prefix="best_solution"
+        )
+
+        print("Archivos DSS generados:")
+        for path in dss_files:
+            print(" -", path)
 
 
 if __name__ == "__main__":

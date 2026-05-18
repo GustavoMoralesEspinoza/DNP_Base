@@ -18,18 +18,25 @@ class PyTopologyValidator:
         stage_results = []
         warnings = []
         total_penalty = 0.0
+        penalty_breakdown = self._empty_penalty_breakdown()
 
         for stage_index, stage_vector in enumerate(chromosome.matrix, start=1):
             stage_result = self.validate_stage(stage_vector, stage_index)
             stage_results.append(stage_result)
             warnings.extend(stage_result["warnings"])
             total_penalty += stage_result["penalty"]
+            self._accumulate_penalty_breakdown(
+                penalty_breakdown,
+                stage_result.get("penalty_breakdown", {})
+            )
 
         is_valid = all(stage_result["penalty"] == 0 for stage_result in stage_results)
+        penalty_breakdown["total"] = total_penalty
 
         return {
             "is_valid": is_valid,
             "total_penalty": total_penalty,
+            "penalty_breakdown": penalty_breakdown,
             "stage_results": stage_results,
             "warnings": warnings
         }
@@ -97,9 +104,11 @@ class PyTopologyValidator:
             "n_edges": graph.number_of_edges(),
             "n_nodes": graph.number_of_nodes(),
             "penalty": 0.0,
+            "penalty_breakdown": self._empty_penalty_breakdown(),
             "warnings": warnings
         }
-        stage_result["penalty"] = self.calculate_stage_penalty(stage_result)
+        stage_result["penalty_breakdown"] = self.calculate_stage_penalty(stage_result)
+        stage_result["penalty"] = stage_result["penalty_breakdown"]["total"]
 
         return stage_result
 
@@ -150,20 +159,39 @@ class PyTopologyValidator:
         return None, None
 
     def calculate_stage_penalty(self, stage_result):
-        penalty = 0.0
-        penalty += self.config.penalty_cycle * stage_result["n_cycles"]
-        penalty += self.config.penalty_isolated_bus * len(stage_result["isolated_loads"])
-        penalty += (
+        breakdown = self._empty_penalty_breakdown()
+
+        breakdown["topology_cycle"] = (
+            self.config.penalty_cycle * stage_result["n_cycles"]
+        )
+        breakdown["topology_nodes_in_cycles"] = (
+            self.config.penalty_nodes_in_cycles
+            * len(stage_result.get("nodes_in_cycles", []))
+        )
+        breakdown["topology_isolated_bus"] = (
+            self.config.penalty_isolated_bus
+            * len(stage_result["isolated_loads"])
+        )
+        breakdown["topology_disconnected_load"] = (
+            self.config.penalty_disconnected_load
+            * len(stage_result["isolated_loads"])
+        )
+        breakdown["topology_component_without_source"] = (
             self.config.penalty_component_without_source
             * len(stage_result["components_without_source"])
         )
 
         if not self.config.allow_multiple_sources_per_component:
-            penalty += (
+            breakdown["topology_multiple_sources"] = (
                 self.config.penalty_multiple_sources
                 * len(stage_result["components_with_multiple_sources"])
             )
-        return penalty
+
+        breakdown["total"] = sum(
+            value for key, value in breakdown.items()
+            if key != "total"
+        )
+        return breakdown
 
     def normalize_bus_name(self, bus_name):
         if self.config.collapse_sources and self.is_source_bus(bus_name):
@@ -215,8 +243,30 @@ class PyTopologyValidator:
             print(f"  Nodos: {stage_result['n_nodes']}")
             print(f"  Aristas: {stage_result['n_edges']}")
             print(f"  Penalidad: {stage_result['penalty']:.2f}")
+            breakdown = stage_result.get("penalty_breakdown", {})
+            if breakdown:
+                print("  Desglose penalidad:")
+                for key, value in breakdown.items():
+                    if key != "total" and value:
+                        print(f"    {key}: {value:.2f}")
 
         print("=" * 70 + "\n")
+
+    def _empty_penalty_breakdown(self):
+        return {
+            "topology_cycle": 0.0,
+            "topology_nodes_in_cycles": 0.0,
+            "topology_isolated_bus": 0.0,
+            "topology_disconnected_load": 0.0,
+            "topology_component_without_source": 0.0,
+            "topology_multiple_sources": 0.0,
+            "total": 0.0
+        }
+
+    def _accumulate_penalty_breakdown(self, target, source):
+        for key, value in source.items():
+            if key in target and key != "total":
+                target[key] += value
 
     def _get_line_ids(self):
         line_catalog = self.data.get("line_catalog", {})

@@ -22,7 +22,8 @@ class PyEvaluationResult:
     """
 
     def __init__(self, chromosome, fitness, c_inv, c_ele, penalty,
-                 topology_result=None, dss_results=None, is_feasible=True):
+                 topology_result=None, dss_results=None, is_feasible=True,
+                 repair_result=None):
         """
         Inicializa los resultados de evaluación de un cromosoma.
         
@@ -44,6 +45,7 @@ class PyEvaluationResult:
         self.topology_result = topology_result
         self.dss_results = dss_results
         self.is_feasible = is_feasible
+        self.repair_result = repair_result
 
     def summary(self):
         """
@@ -77,6 +79,17 @@ class PyEvaluationResult:
                 "  Penalidad topológica:     "
                 f"{self.topology_result.get('total_penalty', 0.0):.6f}"
             )
+
+        if self.repair_result is not None:
+            print("\n[REPARACIÓN]")
+            print("  Reparación activa:        True")
+            print(f"  Fue reparado:             {self.repair_result.get('was_repaired')}")
+            print(f"  Cambios de reparación:    {self.repair_result.get('total_changes')}")
+            print(f"  Reparación exitosa:       {self.repair_result.get('success')}")
+
+        objective_result = getattr(self, "objective_result", None)
+        if objective_result is not None:
+            self.print_penalty_breakdown(objective_result.get("penalty_breakdown"))
         
         if self.dss_results is not None:
             print("\n[FLUJO DE POTENCIA]")
@@ -84,3 +97,28 @@ class PyEvaluationResult:
                 print(f"  {key}:                    {value}")
         
         print("\n" + "="*60 + "\n")
+
+    def print_penalty_breakdown(self, penalty_breakdown=None):
+        """
+        Imprime desglose global y por estágio de penalidades si existe.
+        """
+        if not penalty_breakdown:
+            return
+
+        print("\n[RESUMEN DE PENALIDADES]")
+        for key, value in penalty_breakdown.items():
+            print(f"  {key}: {value:.2f}")
+
+        if self.topology_result is None:
+            return
+
+        stage_results = self.topology_result.get("stage_results", [])
+        if not stage_results:
+            return
+
+        print("\n[PENALIDADES POR ESTÁGIO]")
+        for stage_result in stage_results:
+            print(f"  Estágio {stage_result.get('stage_index')}:")
+            stage_breakdown = stage_result.get("penalty_breakdown", {})
+            for key, value in stage_breakdown.items():
+                print(f"    {key}: {value:.2f}")

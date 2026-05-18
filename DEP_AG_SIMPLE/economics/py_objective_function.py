@@ -23,7 +23,8 @@ class PyObjectiveFunction:
         investment_pv_result,
         electrical_loss_pv_result=None,
         extra_penalties=None,
-        warnings=None
+        warnings=None,
+        penalty_breakdown=None
     ):
         """
         Calcula el fitness total a partir de costos en valor presente.
@@ -43,7 +44,13 @@ class PyObjectiveFunction:
 
         weighted_investment = self.config.w_inv * c_inv_pu
         weighted_electrical_losses = self.config.w_ele * c_ele_pu
-        penalty = self.calculate_penalty(warnings, extra_penalties)
+        if penalty_breakdown is None:
+            penalty_breakdown = self.build_penalty_breakdown(
+                warnings,
+                extra_penalties
+            )
+
+        penalty = penalty_breakdown["total"]
         fitness = weighted_investment + weighted_electrical_losses + penalty
 
         return {
@@ -56,7 +63,8 @@ class PyObjectiveFunction:
             "weighted_electrical_losses": weighted_electrical_losses,
             "penalty": penalty,
             "is_feasible": penalty == 0,
-            "warnings": warnings if warnings is not None else []
+            "warnings": warnings if warnings is not None else [],
+            "penalty_breakdown": penalty_breakdown
         }
 
     def normalize(self, value, max_value, label):
@@ -78,17 +86,42 @@ class PyObjectiveFunction:
         """
         Calcula penalidades por warnings y penalidades adicionales.
         """
+        return self.build_penalty_breakdown(warnings, extra_penalties)["total"]
+
+    def build_penalty_breakdown(self, warnings=None, extra_penalties=None):
+        """
+        Construye un desglose compatible cuando no llega uno desde el evaluador.
+        """
+        breakdown = self.empty_penalty_breakdown()
         penalty = 0.0
 
         if warnings:
-            penalty += len(warnings) * self.config.penalty_warning
+            breakdown["warnings"] = len(warnings) * self.config.penalty_warning
 
         if isinstance(extra_penalties, (int, float)):
-            penalty += extra_penalties
+            breakdown["extra_penalties"] += extra_penalties
         elif isinstance(extra_penalties, list):
-            penalty += sum(extra_penalties)
+            breakdown["extra_penalties"] += sum(extra_penalties)
 
-        return float(penalty)
+        breakdown["total"] = sum(
+            value for key, value in breakdown.items()
+            if key != "total"
+        )
+        return breakdown
+
+    def empty_penalty_breakdown(self):
+        return {
+            "invalid_option": 0.0,
+            "warnings": 0.0,
+            "topology_cycle": 0.0,
+            "topology_nodes_in_cycles": 0.0,
+            "topology_isolated_bus": 0.0,
+            "topology_disconnected_load": 0.0,
+            "topology_component_without_source": 0.0,
+            "topology_multiple_sources": 0.0,
+            "extra_penalties": 0.0,
+            "total": 0.0
+        }
 
     def validate_weights(self):
         """
@@ -129,6 +162,12 @@ class PyObjectiveFunction:
         print(f"Penalidad: {objective_result['penalty']:.2f}")
         print(f"Fitness final: {objective_result['fitness']:.6f}")
         print(f"Factible: {objective_result['is_feasible']}")
+
+        penalty_breakdown = objective_result.get("penalty_breakdown", {})
+        if penalty_breakdown:
+            print("Desglose de penalidades:")
+            for key, value in penalty_breakdown.items():
+                print(f"  {key}: {value:.2f}")
 
         warnings = objective_result.get("warnings", [])
         if warnings:
