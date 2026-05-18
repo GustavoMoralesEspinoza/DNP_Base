@@ -7,6 +7,7 @@ from genetic_algorithm.py_selection import PySelection
 from genetic_algorithm.py_crossover import PyCrossover
 from genetic_algorithm.py_mutation import PyMutation
 from genetic_algorithm.py_elitism import PyElitism
+from reports.py_ga_report import PyGAReport
 
 
 class PySimpleGA:
@@ -24,7 +25,11 @@ class PySimpleGA:
         self.best_result = None
         self.history_best = []
         self.history_mean = []
+        self.history_global = []
         self.history_feasible = []
+        self.history_population_size = []
+        self.evaluation_records = []
+        self._current_iteration = None
 
     def run(self):
         if getattr(self.config, "use_topology_validation", False):
@@ -35,6 +40,7 @@ class PySimpleGA:
         population = self.population_creator.create_initial_population()
 
         for iteration in range(1, self.config.n_iterations + 1):
+            self._current_iteration = iteration
             evaluated_population = self.evaluate_population(population)
             self.update_history(evaluated_population, iteration)
             self.print_iteration_summary(iteration, evaluated_population)
@@ -43,16 +49,18 @@ class PySimpleGA:
                 population = self.create_next_generation(evaluated_population)
 
         self.print_final_summary()
+        self.write_reports()
         return self.best_result
 
     def evaluate_population(self, population):
         evaluated_population = []
 
-        for chromosome in population:
+        for individual_index, chromosome in enumerate(population, start=1):
             # PyPlanningProblem.evaluate() may repair the chromosome. From this
             # point on, the AG must use result.chromosome as the individual.
             evaluated_result = self.problem.evaluate(chromosome)
             evaluated_population.append(evaluated_result)
+            self.record_evaluation(evaluated_result, individual_index)
 
         return evaluated_population
 
@@ -73,7 +81,9 @@ class PySimpleGA:
 
         self.history_best.append(best_iteration_result.fitness)
         self.history_mean.append(sum(fitness_values) / len(fitness_values))
+        self.history_global.append(self.best_result.fitness)
         self.history_feasible.append(feasible_count)
+        self.history_population_size.append(len(evaluated_population))
 
     def create_next_generation(self, evaluated_population):
         next_population = self.elitism.get_elites(evaluated_population)
@@ -107,6 +117,40 @@ class PySimpleGA:
         print(f"Fitness promedio: {mean_fitness:.6f}")
         print(f"Mejor global: {self.best_result.fitness:.6f}")
         print(f"Factibles: {feasible_count}/{len(evaluated_population)}")
+
+    def record_evaluation(self, evaluated_result, individual_index):
+        if not (
+            getattr(self.config, "use_ga_reports", False)
+            or getattr(self.config, "use_ga_plots", False)
+        ):
+            return
+
+        if (
+            not getattr(self.config, "save_all_ga_evaluations", False)
+            and not getattr(self.config, "use_ga_plots", False)
+        ):
+            return
+
+        self.evaluation_records.append({
+            "iteration": self._current_iteration,
+            "individual": individual_index,
+            "result": evaluated_result,
+        })
+
+    def write_reports(self):
+        reporter = PyGAReport(self.config)
+        report_files = reporter.write_reports(self)
+        plot_files = reporter.write_plots(self)
+
+        if report_files:
+            print("Reportes AG guardados:")
+            for path in report_files:
+                print(" -", path)
+
+        if plot_files:
+            print("Graficos AG guardados:")
+            for path in plot_files:
+                print(" -", path)
 
     def print_final_summary(self):
         print("\n" + "=" * 70)

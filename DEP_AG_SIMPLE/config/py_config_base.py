@@ -117,6 +117,16 @@ class PyConfigBase:
         self.topology_debug_with_labels = True
         self.topology_debug_layout_seed = 42
 
+        # Reportes y graficos del algoritmo genetico.
+        self.use_ga_reports = True
+        self.use_ga_plots = True
+        self.ga_reports_output_folder = "outputs/ga_reports"
+        self.ga_plots_output_folder = "outputs/ga_plots"
+        self.save_all_ga_evaluations = True
+        self.use_log_scale_for_fitness_plots = True
+        self.plot_min_positive_value = 1e-9
+        self.plot_dpi = 300
+
         # Si True, todas las subestaciones SE_* se interpretan como una fuente equivalente.
         # Conviene prenderlo cuando el modelo eléctrico representa una misma fuente agregada.
         self.collapse_sources = True
@@ -247,6 +257,13 @@ class PyConfigBase:
         print(f"  Remover solo líneas removibles: {self.repair_only_removable_lines}")
         print(f"  Debug plots topología:   {self.use_topology_debug_plots}")
         print(f"  Carpeta debug topología: {self.topology_debug_output_folder}")
+        print(f"  Reportes AG:             {self.use_ga_reports}")
+        print(f"  Graficos AG:             {self.use_ga_plots}")
+        print(f"  Carpeta reportes AG:     {self.ga_reports_output_folder}")
+        print(f"  Carpeta graficos AG:     {self.ga_plots_output_folder}")
+        print(f"  Guardar evaluaciones AG: {self.save_all_ga_evaluations}")
+        print(f"  Escala log fitness AG:   {self.use_log_scale_for_fitness_plots}")
+        print(f"  DPI graficos:            {self.plot_dpi}")
         print(f"  Colapsar fuentes:        {self.collapse_sources}")
         print(f"  Fuente equivalente:      {self.equivalent_source_name}")
         print(f"  Permitir múltiples fuentes/componente: {self.allow_multiple_sources_per_component}")
