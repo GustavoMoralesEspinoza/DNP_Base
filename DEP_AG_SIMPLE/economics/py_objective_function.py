@@ -39,6 +39,14 @@ class PyObjectiveFunction:
         else:
             c_ele_total = electrical_loss_pv_result["total_pv"]
 
+        if (
+            electrical_loss_pv_result is not None
+            and getattr(self.config, "c_ele_max", 1.0) <= 1.0
+        ):
+            # Referencia automatica simple para FASE 11. Luego puede
+            # reemplazarse por una referencia tecnica sum(Rmax * Imax^2).
+            self.config.c_ele_max = max(c_ele_total, 1.0)
+
         c_inv_pu = self.normalize(c_inv_total, self.config.c_inv_max, "inversion")
         c_ele_pu = self.normalize(c_ele_total, self.config.c_ele_max, "perdidas electricas")
 
@@ -119,6 +127,9 @@ class PyObjectiveFunction:
             "topology_disconnected_load": 0.0,
             "topology_component_without_source": 0.0,
             "topology_multiple_sources": 0.0,
+            "dss_error": 0.0,
+            "voltage_violations": 0.0,
+            "current_violations": 0.0,
             "extra_penalties": 0.0,
             "total": 0.0
         }

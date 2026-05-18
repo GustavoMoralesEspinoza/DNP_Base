@@ -17,56 +17,56 @@ New Loadshape.LS_DEFAULT npts=24 interval=1 mult=[1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
 ! Lines
 ! ==========================
 
-New Line.LN000 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B1.1.2.3 length=0.562 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
-New Line.LN002 Phases=3 Bus1=B3.1.2.3 Bus2=B4.1.2.3 length=0.624 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN004 Phases=3 Bus1=B4.1.2.3 Bus2=B5.1.2.3 length=0.624 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
-New Line.LN005 Phases=3 Bus1=B7.1.2.3 Bus2=B8.1.2.3 length=0.624 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN006 Phases=3 Bus1=B15.1.2.3 Bus2=B16.1.2.3 length=0.5 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN007 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B11.1.2.3 length=0.686 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN008 Phases=3 Bus1=B5.1.2.3 Bus2=B6.1.2.3 length=0.624 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN010 Phases=3 Bus1=B1.1.2.3 Bus2=B2.1.2.3 length=0.75 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
-New Line.LN011 Phases=3 Bus1=B9.1.2.3 Bus2=B10.1.2.3 length=0.75 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
-New Line.LN013 Phases=3 Bus1=B14.1.2.3 Bus2=B15.1.2.3 length=0.562 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN014 Phases=3 Bus1=B11.1.2.3 Bus2=B12.1.2.3 length=0.624 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN015 Phases=3 Bus1=B12.1.2.3 Bus2=B13.1.2.3 length=0.874 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
+New Line.LN000 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B1.1.2.3 length=0.562 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN001 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B3.1.2.3 length=0.436 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
+New Line.LN003 Phases=3 Bus1=B4.1.2.3 Bus2=B7.1.2.3 length=0.5 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN004 Phases=3 Bus1=B4.1.2.3 Bus2=B5.1.2.3 length=0.624 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN005 Phases=3 Bus1=B7.1.2.3 Bus2=B8.1.2.3 length=0.624 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
+New Line.LN007 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B11.1.2.3 length=0.686 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
+New Line.LN009 Phases=3 Bus1=B1.1.2.3 Bus2=B9.1.2.3 length=1.436 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN010 Phases=3 Bus1=B1.1.2.3 Bus2=B2.1.2.3 length=0.75 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN011 Phases=3 Bus1=B9.1.2.3 Bus2=B10.1.2.3 length=0.75 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
+New Line.LN012 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B14.1.2.3 length=0.562 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
+New Line.LN013 Phases=3 Bus1=B14.1.2.3 Bus2=B15.1.2.3 length=0.562 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
+New Line.LN014 Phases=3 Bus1=B11.1.2.3 Bus2=B12.1.2.3 length=0.624 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN015 Phases=3 Bus1=B12.1.2.3 Bus2=B13.1.2.3 length=0.874 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
 New Line.LN016 Phases=3 Bus1=B19.1.2.3 Bus2=B20.1.2.3 length=0.624 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN017 Phases=3 Bus1=B18.1.2.3 Bus2=B19.1.2.3 length=0.5 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN019 Phases=3 Bus1=B9.1.2.3 Bus2=B17.1.2.3 length=0.86 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN020 Phases=3 Bus1=B18.1.2.3 Bus2=B21.1.2.3 length=0.624 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
-New Line.LN021 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B21.1.2.3 length=0.5 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN022 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B22.1.2.3 length=0.75 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
-New Line.LN023 Phases=3 Bus1=B9.1.2.3 Bus2=B22.1.2.3 length=0.936 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
-New Line.LN024 Phases=3 Bus1=B22.1.2.3 Bus2=B23.1.2.3 length=0.686 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN025 Phases=3 Bus1=B23.1.2.3 Bus2=B24.1.2.3 length=0.562 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN017 Phases=3 Bus1=B18.1.2.3 Bus2=B19.1.2.3 length=0.5 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN018 Phases=3 Bus1=B17.1.2.3 Bus2=B18.1.2.3 length=0.812 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN020 Phases=3 Bus1=B18.1.2.3 Bus2=B21.1.2.3 length=0.624 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN021 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B21.1.2.3 length=0.5 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
+New Line.LN022 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B22.1.2.3 length=0.75 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
+New Line.LN024 Phases=3 Bus1=B22.1.2.3 Bus2=B23.1.2.3 length=0.686 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
 New Line.LN026 Phases=3 Bus1=B24.1.2.3 Bus2=B25.1.2.3 length=0.436 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN027 Phases=3 Bus1=B25.1.2.3 Bus2=B8.1.2.3 length=0.562 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN028 Phases=3 Bus1=B8.1.2.3 Bus2=B27.1.2.3 length=0.75 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN029 Phases=3 Bus1=B27.1.2.3 Bus2=B26.1.2.3 length=0.686 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN031 Phases=3 Bus1=B6.1.2.3 Bus2=B28.1.2.3 length=1.0 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN033 Phases=3 Bus1=B30.1.2.3 Bus2=B29.1.2.3 length=0.624 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN034 Phases=3 Bus1=B30.1.2.3 Bus2=B43.1.2.3 length=0.812 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
-New Line.LN035 Phases=3 Bus1=B43.1.2.3 Bus2=B37.1.2.3 length=0.5 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
-New Line.LN036 Phases=3 Bus1=B37.1.2.3 Bus2=B31.1.2.3 length=0.374 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN038 Phases=3 Bus1=B13.1.2.3 Bus2=B43.1.2.3 length=0.75 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN039 Phases=3 Bus1=B44.1.2.3 Bus2=B38.1.2.3 length=0.5 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
-New Line.LN040 Phases=3 Bus1=B38.1.2.3 Bus2=B39.1.2.3 length=0.436 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
-New Line.LN041 Phases=3 Bus1=B39.1.2.3 Bus2=B32.1.2.3 length=0.624 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN043 Phases=3 Bus1=B33.1.2.3 Bus2=B8.1.2.3 length=0.812 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN045 Phases=3 Bus1=B34.1.2.3 Bus2=B35.1.2.3 length=0.936 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
-New Line.LN046 Phases=3 Bus1=B35.1.2.3 Bus2=B36.1.2.3 length=0.374 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
-New Line.LN047 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B36.1.2.3 length=0.436 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN048 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B28.1.2.3 length=0.436 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
+New Line.LN027 Phases=3 Bus1=B25.1.2.3 Bus2=B8.1.2.3 length=0.562 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
+New Line.LN028 Phases=3 Bus1=B8.1.2.3 Bus2=B27.1.2.3 length=0.75 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
+New Line.LN029 Phases=3 Bus1=B27.1.2.3 Bus2=B26.1.2.3 length=0.686 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
+New Line.LN030 Phases=3 Bus1=B27.1.2.3 Bus2=B28.1.2.3 length=0.624 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
+New Line.LN031 Phases=3 Bus1=B6.1.2.3 Bus2=B28.1.2.3 length=1.0 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
+New Line.LN032 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B30.1.2.3 length=0.562 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN033 Phases=3 Bus1=B30.1.2.3 Bus2=B29.1.2.3 length=0.624 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN034 Phases=3 Bus1=B30.1.2.3 Bus2=B43.1.2.3 length=0.812 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
+New Line.LN035 Phases=3 Bus1=B43.1.2.3 Bus2=B37.1.2.3 length=0.5 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
+New Line.LN037 Phases=3 Bus1=B31.1.2.3 Bus2=B10.1.2.3 length=0.624 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
+New Line.LN039 Phases=3 Bus1=B44.1.2.3 Bus2=B38.1.2.3 length=0.5 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
+New Line.LN040 Phases=3 Bus1=B38.1.2.3 Bus2=B39.1.2.3 length=0.436 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
+New Line.LN041 Phases=3 Bus1=B39.1.2.3 Bus2=B32.1.2.3 length=0.624 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
+New Line.LN042 Phases=3 Bus1=B39.1.2.3 Bus2=B33.1.2.3 length=0.686 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
+New Line.LN044 Phases=3 Bus1=B33.1.2.3 Bus2=B34.1.2.3 length=0.562 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
+New Line.LN045 Phases=3 Bus1=B34.1.2.3 Bus2=B35.1.2.3 length=0.936 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
+New Line.LN046 Phases=3 Bus1=B35.1.2.3 Bus2=B36.1.2.3 length=0.374 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
+New Line.LN047 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B36.1.2.3 length=0.436 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
+New Line.LN048 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B28.1.2.3 length=0.436 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
 New Line.LN049 Phases=3 Bus1=sourcebus.1.2.3 Bus2=B41.1.2.3 length=0.5 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
 New Line.LN050 Phases=3 Bus1=B41.1.2.3 Bus2=B40.1.2.3 length=0.624 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
-New Line.LN051 Phases=3 Bus1=B40.1.2.3 Bus2=B16.1.2.3 length=0.624 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
-New Line.LN052 Phases=3 Bus1=B41.1.2.3 Bus2=B42.1.2.3 length=0.75 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
-New Line.LN053 Phases=3 Bus1=B42.1.2.3 Bus2=B48.1.2.3 length=0.5 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
-New Line.LN054 Phases=3 Bus1=B48.1.2.3 Bus2=B49.1.2.3 length=0.75 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
-New Line.LN055 Phases=3 Bus1=B49.1.2.3 Bus2=B50.1.2.3 length=0.5 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN051 Phases=3 Bus1=B40.1.2.3 Bus2=B16.1.2.3 length=0.624 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN052 Phases=3 Bus1=B41.1.2.3 Bus2=B42.1.2.3 length=0.75 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
+New Line.LN053 Phases=3 Bus1=B42.1.2.3 Bus2=B48.1.2.3 length=0.5 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
+New Line.LN054 Phases=3 Bus1=B48.1.2.3 Bus2=B49.1.2.3 length=0.75 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
+New Line.LN055 Phases=3 Bus1=B49.1.2.3 Bus2=B50.1.2.3 length=0.5 r1=0.0966 x1=0.1201 r0=0.0966 x0=0.1201 c1=0 c0=0 units=km normamps=600.0
 New Line.LN057 Phases=3 Bus1=B47.1.2.3 Bus2=B46.1.2.3 length=0.436 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN058 Phases=3 Bus1=B46.1.2.3 Bus2=B14.1.2.3 length=0.624 r1=0.2359 x1=0.2402 r0=0.2359 x0=0.2402 c1=0 c0=0 units=km normamps=250.0
-New Line.LN059 Phases=3 Bus1=B12.1.2.3 Bus2=B45.1.2.3 length=0.624 r1=0.3655 x1=0.252 r0=0.3655 x0=0.252 c1=0 c0=0 units=km normamps=150.0
-New Line.LN060 Phases=3 Bus1=B45.1.2.3 Bus2=B44.1.2.3 length=0.686 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN058 Phases=3 Bus1=B46.1.2.3 Bus2=B14.1.2.3 length=0.624 r1=0.1932 x1=0.2279 r0=0.1932 x0=0.2279 c1=0 c0=0 units=km normamps=300.0
+New Line.LN060 Phases=3 Bus1=B45.1.2.3 Bus2=B44.1.2.3 length=0.686 r1=0.2921 x1=0.2466 r0=0.2921 x0=0.2466 c1=0 c0=0 units=km normamps=200.0
 
 ! ==========================
 ! Loads
@@ -131,7 +131,7 @@ New Load.Load_B50_C Bus1=B50.1.2.3 Phases=3 Conn=Wye Model=1 kV=13.8 kW=288.0 kV
 ! DERs
 ! ==========================
 
-Redirect "E:\Repositorios en GIt\DNP_Base\DEP_AG_SIMPLE\Initialdata\DERs\DERs_Stage3.dss"
+Redirect "e:\Repositorios en GIt\DNP_Base\DEP_AG_SIMPLE\Initialdata\DERs\DERs_Stage3.dss"
 
 Set VoltageBases=[13.8]
 CalcVoltageBases

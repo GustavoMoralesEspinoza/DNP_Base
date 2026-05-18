@@ -42,6 +42,7 @@ class PyDSSResults:
         for stage_result in self.stage_results:
             hourly_active_power = stage_result.get("hourly_active_power_kw", [])
             max_active_power = max(hourly_active_power) if hourly_active_power else 0.0
+            min_active_power = min(hourly_active_power) if hourly_active_power else 0.0
 
             vmin = self._format_optional(stage_result.get("min_voltage_pu"))
             vmax = self._format_optional(stage_result.get("max_voltage_pu"))
@@ -53,7 +54,16 @@ class PyDSSResults:
                 "  Energia perdida kWh: "
                 f"{stage_result.get('energy_losses_kwh', 0.0):.6f}"
             )
+            print(f"  P activa minima kW: {min_active_power:.6f}")
             print(f"  P activa maxima kW: {max_active_power:.6f}")
+            if (
+                hourly_active_power
+                and abs(max_active_power - min_active_power) <= 1e-6
+            ):
+                print(
+                    "  WARNING: La potencia activa diaria no vario. "
+                    "Verificar LoadShapes."
+                )
             print(f"  Vmin pu: {vmin}")
             print(f"  Vmax pu: {vmax}")
             print(

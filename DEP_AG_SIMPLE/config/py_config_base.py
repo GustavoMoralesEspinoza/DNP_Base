@@ -57,12 +57,12 @@ class PyConfigBase:
         """
         
         # Parámetros del AG
-        self.n_individuals = 20
-        self.n_iterations = 30
+        self.n_individuals = 10
+        self.n_iterations = 20
         self.crossover_rate = 0.8
         self.mutation_rate = 0.05
         self.elitism_rate = 0.2
-        self.random_seed = 10
+        self.random_seed = 20
         
         # Parámetros del problema
         self.n_stages = 3
@@ -131,7 +131,8 @@ class PyConfigBase:
         # Parámetros de módulos
         self.use_open_dss = False
         self.use_investment_cost = True
-        self.use_electrical_loss_cost = False
+        self.use_open_dss_in_fitness = True
+        self.use_electrical_loss_cost = True
         self.use_present_value = True
 
         # Generación de archivos DSS. Solo escribe archivos; no ejecuta OpenDSS.
@@ -146,6 +147,10 @@ class PyConfigBase:
         self.dss_collapse_sources = True
         self.dss_equivalent_source_name = "sourcebus"
         self.dss_write_comments = True
+        self.dss_use_loadshapes = True
+        self.dss_default_loadshape_name = "LS_DEFAULT"
+        self.default_consumer_type = "R"
+        self.dss_normalize_loadshapes = False
 
         # Ejecucion OpenDSS 24 h para la mejor solucion final.
         self.use_dss_runner = True
@@ -153,6 +158,15 @@ class PyConfigBase:
         self.dss_mode = "daily"
         self.dss_runner_verbose = True
         self.dss_continue_on_error = True
+        self.dss_temp_output_folder = "outputs/dss_temp"
+        self.skip_opendss_if_topology_invalid = True
+
+        # Insercion de DERs desde archivos DSS externos por estagio.
+        self.use_ders = True
+        self.ders_folder = "Initialdata/DERs"
+        self.ders_file_pattern = "DERs_Stage{stage}.dss"
+        self.ders_continue_if_missing = True
+        self.ders_warn_once = True
         
         # Parámetros de objetivos
         self.w_inv = 0.7
@@ -161,6 +175,7 @@ class PyConfigBase:
         # Parámetros económicos
         self.interest_rate = 0.10
         self.energy_price = 0.1
+        self.days_per_year = 365
         self.removal_factor = 0.30  # Factor de costo para remover/reemplazar líneas
         
         # Parámetros de límites
@@ -184,6 +199,14 @@ class PyConfigBase:
 
         # Penalidades por múltiples fuentes.
         self.penalty_multiple_sources = 3e7
+        self.penalty_dss_error = 1e8
+
+        # Penalidades tecnicas OpenDSS. Son bajas y diagnosticas.
+        self.use_voltage_penalty = True
+        self.use_current_penalty = True
+        self.use_proportional_technical_penalties = False
+        self.penalty_voltage_violation = 1e2
+        self.penalty_current_violation = 1e2
 
         # Penalidades por warnings generales.
         self.penalty_warning = 0
@@ -230,6 +253,7 @@ class PyConfigBase:
         
         print("\n[MÓDULOS ACTIVOS]")
         print(f"  OpenDSS:                 {self.use_open_dss}")
+        print(f"  OpenDSS en fitness:      {self.use_open_dss_in_fitness}")
         print(f"  Costo de inversión:      {self.use_investment_cost}")
         print(f"  Costo de pérdidas:       {self.use_electrical_loss_cost}")
         print(f"  Valor presente:          {self.use_present_value}")
@@ -240,6 +264,16 @@ class PyConfigBase:
         print(f"  Colapsar fuentes DSS:    {self.dss_collapse_sources}")
         print(f"  Horas simulacion DSS:    {self.dss_simulation_hours}")
         print(f"  Modo DSS:                {self.dss_mode}")
+        print(f"  LoadShapes DSS:          {self.dss_use_loadshapes}")
+        print(f"  LoadShape por defecto:   {self.dss_default_loadshape_name}")
+        print(f"  Tipo consumidor defecto: {self.default_consumer_type}")
+        print(f"  Normalizar LoadShapes:   {self.dss_normalize_loadshapes}")
+        print(f"  Carpeta DSS temporal:    {self.dss_temp_output_folder}")
+        print(f"  Saltar DSS si topologia invalida: {self.skip_opendss_if_topology_invalid}")
+        print(f"  Usar DERs:               {self.use_ders}")
+        print(f"  Carpeta DERs:            {self.ders_folder}")
+        print(f"  Patron archivos DERs:    {self.ders_file_pattern}")
+        print(f"  Warning DER una vez:     {self.ders_warn_once}")
         
         print("\n[OBJETIVOS]")
         print(f"  Peso inversión (w_inv):  {self.w_inv}")
@@ -248,6 +282,7 @@ class PyConfigBase:
         print("\n[ECONOMÍA]")
         print(f"  Tasa de interés:         {self.interest_rate}")
         print(f"  Precio energía:          {self.energy_price} $/kWh")
+        print(f"  Días por año:            {self.days_per_year}")
         print(f"  Factor de remoción:      {self.removal_factor}")
         
         print("\n[LÍMITES]")
@@ -265,6 +300,15 @@ class PyConfigBase:
         print(f"  Penalidad comp. sin fuente: {self.penalty_component_without_source:.0e}")
         print(f"  Penalidad múltiples fuentes: {self.penalty_multiple_sources:.0e}")
         print(f"  Penalidad carga desconectada: {self.penalty_disconnected_load:.0e}")
+        print(f"  Penalidad error DSS:     {self.penalty_dss_error:.0e}")
+        print(f"  Penalidad tension activa:{self.use_voltage_penalty}")
+        print(f"  Penalidad corriente activa: {self.use_current_penalty}")
+        print(
+            "  Penalidades tecnicas proporcionales: "
+            f"{self.use_proportional_technical_penalties}"
+        )
+        print(f"  Penalidad violacion tension: {self.penalty_voltage_violation:.0e}")
+        print(f"  Penalidad violacion corriente: {self.penalty_current_violation:.0e}")
         print(f"  Mínimo normalización:    {self.minimum_normalization_value:.0e}")
         
         print("\n" + "="*60 + "\n")

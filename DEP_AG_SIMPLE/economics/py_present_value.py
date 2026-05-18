@@ -131,39 +131,77 @@ class PyPresentValue:
                 "explanation": str
             }
         """
-        pv_by_stage = {}
+        return self.operation(annual_costs_by_stage)
+
+    def operation(self, annual_costs_by_stage):
+        """
+        Calcula valor presente de costos operativos anuales.
+
+        Los costos operativos empiezan al final del primer año. Para
+        stage_years=[1, 1, 2], las etapas se descuentan en años 1, 2, 3 y 4.
+        """
+        if isinstance(annual_costs_by_stage, dict):
+            ordered_costs = [
+                annual_costs_by_stage[key]
+                for key in sorted(annual_costs_by_stage.keys())
+            ]
+        else:
+            ordered_costs = list(annual_costs_by_stage)
+
+        pv_by_stage = []
         total_pv = 0.0
-        explanation_lines = []
-        
-        for stage_num in sorted(annual_costs_by_stage.keys()):
-            stage_idx = stage_num - 1
-            annual_cost = annual_costs_by_stage[stage_num]
+        discount_details = []
+
+        for stage_idx, annual_cost in enumerate(ordered_costs):
             years_in_stage = self.stage_years[stage_idx]
-            
             stage_pv = 0.0
-            exp = f"Etapa {stage_num} ({years_in_stage} años): "
-            
-            # Sumar PV para cada año en la etapa
-            start_year = self.cumulative_years[stage_idx]
+            start_year = self.cumulative_years[stage_idx] + 1
+
             for year_offset in range(years_in_stage):
                 year = start_year + year_offset
                 if self.interest_rate == 0:
                     df = 1.0
                 else:
                     df = 1.0 / ((1.0 + self.interest_rate) ** year)
+
                 pv_year = annual_cost * df
                 stage_pv += pv_year
-                exp += f" "
-            
-            pv_by_stage[stage_num] = stage_pv
+                discount_details.append({
+                    "stage_index": stage_idx,
+                    "year": year,
+                    "factor": df,
+                    "annual_cost": annual_cost,
+                    "pv_cost": pv_year
+                })
+
+            pv_by_stage.append(stage_pv)
             total_pv += stage_pv
-            explanation_lines.append(f"{exp}= ")
-        
+
         return {
             "pv_by_stage": pv_by_stage,
             "total_pv": total_pv,
-            "explanation": "\n".join(explanation_lines)
+            "discount_details": discount_details
         }
+
+    def print_present_value_summary(self, pv_result):
+        if not pv_result:
+            return
+
+        print("\n" + "-" * 70)
+        print("Valor presente perdidas:")
+        print("-" * 70)
+
+        for detail in pv_result.get("discount_details", []):
+            print(
+                f"  año {detail['year']}: "
+                f"stage {detail['stage_index'] + 1}, "
+                f"factor={detail['factor']:.6f}, "
+                f"costo={detail['annual_cost']:.6f}, "
+                f"VP={detail['pv_cost']:.6f}"
+            )
+
+        print(f"Total VP perdidas: {pv_result.get('total_pv', 0.0):.6f}")
+        print("-" * 70 + "\n")
 
     def calculate_total_pv(self, investment_costs, operational_costs=None):
         """

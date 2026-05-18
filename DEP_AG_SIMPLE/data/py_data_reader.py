@@ -29,6 +29,7 @@ class PyDataReader:
         try:
             self._read_buses()
             self._read_loads()
+            self._read_load_curves()
             self._read_line_options()
             self._read_line_catalog()
             
@@ -136,6 +137,45 @@ class PyDataReader:
             msg = f"ERROR: No encontrado {filepath}"
             self.validation_errors.append(msg)
             raise FileNotFoundError(msg)
+
+    def _read_load_curves(self):
+        """Lee curvas horarias por tipo de consumidor si el CSV existe."""
+        filepath = os.path.join(self.data_dir, "load_curves_by_consumer_type_template.csv")
+        load_curves = {}
+
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                if not reader.fieldnames:
+                    self.data['load_curves'] = load_curves
+                    return
+
+                curve_columns = [
+                    field for field in reader.fieldnames
+                    if field and field.strip().lower() != "hour"
+                ]
+                load_curves = {field.strip(): [] for field in curve_columns}
+
+                for row in reader:
+                    for field in curve_columns:
+                        curve_name = field.strip()
+                        value = row.get(field, "")
+                        try:
+                            load_curves[curve_name].append(float(value))
+                        except (TypeError, ValueError):
+                            load_curves[curve_name].append(1.0)
+
+            self.data['load_curves'] = load_curves
+            print(
+                "\n✓ load_curves_by_consumer_type_template.csv: "
+                f"{len(load_curves)} curvas cargadas"
+            )
+
+        except FileNotFoundError:
+            self.data['load_curves'] = {}
+            warning = f"WARNING: No encontrado {filepath}; se usaran curvas planas"
+            self.validation_warnings.append(warning)
+            print(f"\n{warning}")
 
     def _read_line_options(self):
         """Lee line_valid_options.csv y construye mapeo de opciones."""

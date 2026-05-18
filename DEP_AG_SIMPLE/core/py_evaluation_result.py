@@ -46,6 +46,8 @@ class PyEvaluationResult:
         self.dss_results = dss_results
         self.is_feasible = is_feasible
         self.repair_result = repair_result
+        self.loss_cost_result = None
+        self.electrical_loss_pv_result = None
 
     def summary(self):
         """
@@ -64,6 +66,25 @@ class PyEvaluationResult:
         print("\n[COSTOS]")
         print(f"  Costo de inversión:      {self.c_inv:.6f}")
         print(f"  Costo de pérdidas:       {self.c_ele:.6f}")
+
+        loss_cost_result = getattr(self, "loss_cost_result", None)
+        if loss_cost_result is not None:
+            print("\n[PÉRDIDAS ELÉCTRICAS]")
+            print(
+                "  Pérdidas diarias por estágio: "
+                f"{loss_cost_result.get('losses_kwh_day_by_stage', [])}"
+            )
+            print(
+                "  Costo anual por estágio: "
+                f"{loss_cost_result.get('annual_cost_by_stage', [])}"
+            )
+
+        electrical_loss_pv_result = getattr(self, "electrical_loss_pv_result", None)
+        if electrical_loss_pv_result is not None:
+            print(
+                "  Costo pérdidas eléctricas VP: "
+                f"{electrical_loss_pv_result.get('total_pv', 0.0):.6f}"
+            )
         
         print("\n[RESTRICCIONES]")
         print(f"  Penalidad:               {self.penalty:.6f}")
@@ -90,11 +111,24 @@ class PyEvaluationResult:
         objective_result = getattr(self, "objective_result", None)
         if objective_result is not None:
             self.print_penalty_breakdown(objective_result.get("penalty_breakdown"))
+            technical_keys = ["voltage_violations", "current_violations"]
+            penalty_breakdown = objective_result.get("penalty_breakdown", {})
+            if any(penalty_breakdown.get(key, 0.0) for key in technical_keys):
+                print("\n[PENALIDADES TÉCNICAS]")
+                for key in technical_keys:
+                    print(f"  {key}: {penalty_breakdown.get(key, 0.0):.2f}")
         
         if self.dss_results is not None:
             print("\n[FLUJO DE POTENCIA]")
-            for key, value in self.dss_results.items():
-                print(f"  {key}:                    {value}")
+            if hasattr(self.dss_results, "stage_results"):
+                print(f"  Etapas simuladas:         {len(self.dss_results.stage_results)}")
+                print(
+                    "  Perdidas totales kWh:     "
+                    f"{self.dss_results.total_energy_losses_kwh:.6f}"
+                )
+            else:
+                for key, value in self.dss_results.items():
+                    print(f"  {key}:                    {value}")
         
         print("\n" + "="*60 + "\n")
 

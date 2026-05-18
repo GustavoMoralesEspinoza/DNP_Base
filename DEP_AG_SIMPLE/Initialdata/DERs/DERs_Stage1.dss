@@ -1,0 +1,49 @@
+! ==============================================================================
+! DERs - ESTAGIO 1
+! Gerado automaticamente a partir de: _54B_2026_RED.xlsx
+! Arquivo acumulado do Estágio 1: PVs e BESS definidos na folha DERs.
+! Não usar Clear/Compile aqui: este arquivo foi preparado para Redirect desde o main DSS.
+! Tensão base adotada para os DERs: 13.8 kV L-L.
+! ==============================================================================
+
+! ==============================================================================
+! CURVAS COMUNS - PV / BESS / EV
+! ==============================================================================
+! PV: irradiância e temperatura horária extraídas de Data_PVs.
+New LoadShape.LS_PV_Irrad_E1 npts=24 interval=1 mult=[0 0 0 0 0 0 0.1 0.2 0.3 0.5 0.8 0.9 1 1 0.99 0.9 0.7 0.3 0 0 0 0 0 0]
+New TShape.TS_PV_Temp_E1 npts=24 interval=1 temp=[19 19 19 19 18 18 18 20 21 23 24 25 25 26 25 25 24 24 23 22 21 20 20 19]
+
+! Curva de eficiência do inversor PV e fator Pmpp x Temperatura.
+New XYCurve.XY_PV_Eff_E1 npts=4 xarray=[0.1 0.2 0.4 1.2] yarray=[0.78 0.8 0.84 1]
+New XYCurve.XY_PV_PvsT_E1 npts=4 xarray=[0 20 40 100] yarray=[1.2 1.08 0.96 0.6]
+
+! BESS: sinal negativo = carga; sinal positivo = descarga.
+New LoadShape.LS_BESS1_E1 npts=24 interval=1 mult=[0 0 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 0 0 0.8 0.9 0.94 1 0.94 0]
+New LoadShape.LS_BESS2_E1 npts=24 interval=1 mult=[0 0 -1 -1 -1 -1 -1 0 0.8 0.9 0.94 1 0.94 0 0 0 0 0 0 0 0 0 0 0]
+
+! EV: modelado como Storage apenas em carga; sinal negativo = consumo da rede.
+New LoadShape.LS_EV_Charge_E1 npts=24 interval=1 mult=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 -1 -1 -1 -1 -1 0 0]
+
+! ------------------------------------------------------------------------------
+! PV SYSTEMS
+! ------------------------------------------------------------------------------
+New PVSystem.PV_E1_B1 phases=3 bus1=B1 kV=13.8 kVA=1000 Pmpp=1000 PF=1 Irradiance=1 Temperature=25 %cutin=0.1 %cutout=0.1 EffCurve=XY_PV_Eff_E1 P-TCurve=XY_PV_PvsT_E1 Daily=LS_PV_Irrad_E1 TDaily=TS_PV_Temp_E1
+New PVSystem.PV_E1_B4 phases=3 bus1=B4 kV=13.8 kVA=1000 Pmpp=1000 PF=1 Irradiance=1 Temperature=25 %cutin=0.1 %cutout=0.1 EffCurve=XY_PV_Eff_E1 P-TCurve=XY_PV_PvsT_E1 Daily=LS_PV_Irrad_E1 TDaily=TS_PV_Temp_E1
+New PVSystem.PV_E1_B5 phases=3 bus1=B5 kV=13.8 kVA=1000 Pmpp=1000 PF=1 Irradiance=1 Temperature=25 %cutin=0.1 %cutout=0.1 EffCurve=XY_PV_Eff_E1 P-TCurve=XY_PV_PvsT_E1 Daily=LS_PV_Irrad_E1 TDaily=TS_PV_Temp_E1
+
+! ------------------------------------------------------------------------------
+! BESS - STORAGE
+! ------------------------------------------------------------------------------
+New Storage.BESS_E1_B1 phases=3 bus1=B1 kV=13.8 kWRated=500 kWhRated=2000 kW=0 %Stored=50 %Reserve=20 State=IDLING DispMode=FOLLOW Daily=LS_BESS1_E1 Model=1
+New Storage.BESS_E1_B5 phases=3 bus1=B5 kV=13.8 kWRated=500 kWhRated=2000 kW=0 %Stored=50 %Reserve=20 State=IDLING DispMode=FOLLOW Daily=LS_BESS2_E1 Model=1
+New Storage.BESS_E1_B9 phases=3 bus1=B9 kV=13.8 kWRated=500 kWhRated=2000 kW=0 %Stored=50 %Reserve=20 State=IDLING DispMode=FOLLOW Daily=LS_BESS1_E1 Model=1
+New Storage.BESS_E1_B10 phases=3 bus1=B10 kV=13.8 kWRated=500 kWhRated=2000 kW=0 %Stored=50 %Reserve=20 State=IDLING DispMode=FOLLOW Daily=LS_BESS2_E1 Model=1
+New Storage.BESS_E1_B30 phases=3 bus1=B30 kV=13.8 kWRated=500 kWhRated=2000 kW=0 %Stored=50 %Reserve=20 State=IDLING DispMode=FOLLOW Daily=LS_BESS1_E1 Model=1
+New Storage.BESS_E1_B33 phases=3 bus1=B33 kV=13.8 kWRated=500 kWhRated=2000 kW=0 %Stored=50 %Reserve=20 State=IDLING DispMode=FOLLOW Daily=LS_BESS1_E1 Model=1
+
+! ------------------------------------------------------------------------------
+! EV - STORAGE APENAS EM CARGA
+! ------------------------------------------------------------------------------
+! Nenhum EV definido para este estágio.
+
+! Fim do arquivo
