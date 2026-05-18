@@ -19,6 +19,7 @@ from topology.py_topology_validator import PyTopologyValidator
 from topology.py_topology_repair import PyTopologyRepair
 from reports.py_topology_debug_plot import PyTopologyDebugPlot
 from dss.py_dss_writer import PyDSSWriter
+from dss.py_dss_runner import PyDSSRunner
 
 
 def main():
@@ -113,6 +114,11 @@ def main():
         print("Archivos DSS generados:")
         for path in dss_files:
             print(" -", path)
+
+        if config.use_dss_runner:
+            dss_runner = PyDSSRunner(config)
+            dss_results = dss_runner.run_files_24h(dss_files)
+            dss_results.print_summary()
 
 
 if __name__ == "__main__":

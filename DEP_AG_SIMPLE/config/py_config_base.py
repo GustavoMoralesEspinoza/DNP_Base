@@ -146,6 +146,13 @@ class PyConfigBase:
         self.dss_collapse_sources = True
         self.dss_equivalent_source_name = "sourcebus"
         self.dss_write_comments = True
+
+        # Ejecucion OpenDSS 24 h para la mejor solucion final.
+        self.use_dss_runner = True
+        self.dss_simulation_hours = 24
+        self.dss_mode = "daily"
+        self.dss_runner_verbose = True
+        self.dss_continue_on_error = True
         
         # Parámetros de objetivos
         self.w_inv = 0.7
@@ -227,9 +234,12 @@ class PyConfigBase:
         print(f"  Costo de pérdidas:       {self.use_electrical_loss_cost}")
         print(f"  Valor presente:          {self.use_present_value}")
         print(f"  DSS writer:              {self.use_dss_writer}")
+        print(f"  DSS runner:              {self.use_dss_runner}")
         print(f"  Carpeta DSS:             {self.dss_output_folder}")
         print(f"  Base kV DSS:             {self.dss_base_kv}")
         print(f"  Colapsar fuentes DSS:    {self.dss_collapse_sources}")
+        print(f"  Horas simulacion DSS:    {self.dss_simulation_hours}")
+        print(f"  Modo DSS:                {self.dss_mode}")
         
         print("\n[OBJETIVOS]")
         print(f"  Peso inversión (w_inv):  {self.w_inv}")
